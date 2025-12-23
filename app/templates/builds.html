@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="card">
+  <h2>Útmutatók & Buildek</h2>
+  <p class="muted">
+    Általános guide-ok és konkrét build guide-ok.
+    (A részletekért kattints a kártyákra.)
+  </p>
+</section>
+
+<section class="card">
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+    <div>
+      <h3 style="margin:0;">Interaktív CN térkép</h3>
+      <p class="muted" style="margin-top:6px;">
+        Kínai interaktív térkép:
+      </p>
+    </div>
+    <a class="btn primary"
+       href="https://map.17173.com/yysls/maps/qinghe"
+       target="_blank"
+       rel="noopener noreferrer">
+      Megnyitás →
+    </a>
+  </div>
+</section>
+
+<section class="card">
+  <h3 class="subhead">Általános útmutatók</h3>
+  <div class="guides-grid">
+    {% for g in general_guides %}
+      <a class="guide-card" href="/builds/{{ g.slug }}">
+        {% if g.cover_image %}
+          <div class="guide-cover" style="background-image:url('{{ g.cover_image }}')"></div>
+        {% endif %}
+        <div class="guide-title">{{ g.title }}</div>
+        <div class="guide-summary muted">{{ g.summary }}</div>
+        <div class="guide-cta">Megnyitás →</div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="card">
+  <h3 class="subhead">Build guide-ok</h3>
+  <div class="guides-grid">
+    {% for g in build_guides %}
+      <a class="guide-card" href="/builds/{{ g.slug }}">
+        {% if g.cover_image %}
+          <div class="guide-cover" style="background-image:url('{{ g.cover_image }}')"></div>
+        {% endif %}
+        <div class="guide-title">{{ g.title }}</div>
+        <div class="guide-summary muted">{{ g.summary }}</div>
+        <div class="guide-cta">Megnyitás →</div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

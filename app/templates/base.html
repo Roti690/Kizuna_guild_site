@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{ app_name }} Guild</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="container header">
+  <a href="/" class="brand-link">
+    <div class="brand">
+      <div class="logo">K</div>
+      <div>
+        <div class="name">{{ app_name }}</div>
+        <div class="tag">Where Winds Meet • Guild weboldal</div>
+      </div>
+    </div>
+  </a>
+
+  <nav class="nav">
+  {% if is_officer %}
+  <a href="/_officer">Admin oldal</a>
+  <a href="/_officer/guides">Buildek</a>
+  <a href="/" target="_blank">Weboldal megtekintése</a>
+  <form method="post" action="/officer/logout" style="display:inline;">
+    <button class="btn ghost" type="submit">Kijelentkezés</button>
+  </form>
+{% else %}
+    <a href="/">Kezdőlap</a>
+    <a href="/members">Tagok</a>
+    <a href="/events">Eventek</a>
+    <a href="/builds">Buildek</a>
+    <a href="https://discord.gg/EXTwHXQF" target="_blank">Discord</a>
+  {% endif %}
+</nav>
+
+</header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="container footer">
+    <span>© {{ app_name }} • FastAPI segítségével készült</span>
+  </footer>
+</body>
+</html>

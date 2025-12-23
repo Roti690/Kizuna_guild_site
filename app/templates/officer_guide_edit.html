@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="card">
+  <a class="muted" href="/_officer/guides">← Vissza az útmutatókhoz</a>
+
+  {% if mode == "create" %}
+    <h2 style="margin-top:10px;">Új útmutató</h2>
+    <p class="muted">Először hozd létre az útmutatót, utána tudsz képeket feltölteni.</p>
+  {% else %}
+    <h2 style="margin-top:10px;">Útmutató szerkesztése</h2>
+    <p class="muted">Nyilvános URL: <code>/builds/{{ guide.slug }}</code></p>
+  {% endif %}
+</section>
+
+{% if mode != "create" %}
+<section class="card">
+  <h3 style="margin-top:0;">Útmutató képei</h3>
+  <p class="muted">
+    Itt tölthetsz fel képeket, majd másold be a Markdown kódrészletet oda,
+    ahová a tartalomban szeretnéd.
+  </p>
+
+  <form method="post"
+        action="/_officer/guides/{{ guide.id }}/upload"
+        enctype="multipart/form-data"
+        class="form">
+    <input type="file" name="file" required />
+    <button class="btn" type="submit">Kép feltöltése</button>
+  </form>
+
+  {% if images %}
+    <div class="image-list">
+      {% for img in images %}
+        <div class="image-row">
+          <img src="{{ img.path }}" alt="" />
+          <div class="image-info">
+            <div class="muted">Beillesztés a tartalomba:</div>
+            <code>![]({{ img.path }})</code>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="muted">Még nincs feltöltött kép.</p>
+  {% endif %}
+</section>
+{% endif %}
+
+<section class="card">
+  <form class="form"
+        method="post"
+        action="{% if mode == 'create' %}/_officer/guides/create{% else %}/_officer/guides/update/{{ guide.id }}{% endif %}"
+        enctype="multipart/form-data">
+
+    <label class="muted">Cím</label>
+    <input name="title" value="{{ guide.title if guide else '' }}" required />
+
+    <label class="muted">Kategória</label>
+    <select name="category">
+      <option value="general" {% if guide and guide.category == "general" %}selected{% endif %}>general</option>
+      <option value="build" {% if guide and guide.category == "build" %}selected{% endif %}>build</option>
+    </select>
+
+    <label class="muted">Rövid leírás</label>
+    <input name="summary" value="{{ guide.summary if guide else '' }}" />
+
+    <label class="muted">Borítókép (opcionális feltöltés)</label>
+    {% if guide and guide.cover_image %}
+      <div class="muted" style="margin-bottom:8px;">
+        Jelenlegi: <code>{{ guide.cover_image }}</code>
+      </div>
+      <label class="muted" style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+        <input type="checkbox" name="remove_cover" />
+        Jelenlegi borítókép eltávolítása
+      </label>
+    {% endif %}
+    <input type="file" name="cover_file" />
+
+    <div class="divider"></div>
+
+    {% if mode != "create" %}
+  <label class="muted">Tartalom (Markdown)</label>
+  <textarea name="content_md" rows="18" placeholder="Ide írd a markdown tartalmat...">{% if guide %}{{ guide.content_md }}{% endif %}</textarea>
+{% endif %}
+
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+      <button class="btn primary" type="submit">
+        {% if mode == "create" %}Létrehozás{% else %}Mentés{% endif %}
+      </button>
+      {% if guide %}
+        <a class="btn" href="/builds/{{ guide.slug }}" target="_blank" rel="noopener noreferrer">Előnézet</a>
+      {% endif %}
+    </div>
+  </form>
+
+  {% if guide %}
+    <form method="post"
+          action="/_officer/guides/delete/{{ guide.id }}"
+          onsubmit="return confirm('Biztosan törlöd ezt az útmutatót: {{ guide.title }}?');"
+          style="margin-top:12px;">
+      <button class="btn danger" type="submit">Útmutató törlése</button>
+    </form>
+  {% endif %}
+</section>
+
+{% endblock %}

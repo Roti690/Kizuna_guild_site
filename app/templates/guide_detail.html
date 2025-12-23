@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="card">
+  <a class="muted" href="/builds">← Vissza az útmutatókhoz</a>
+  <h2 style="margin-top:10px;">{{ title }}</h2>
+  {% if summary %}<p class="muted">{{ summary }}</p>{% endif %}
+</section>
+
+{% if cover_image %}
+<section class="card">
+  <div class="detail-cover" style="background-image:url('{{ cover_image }}')"></div>
+</section>
+{% endif %}
+
+<section class="card">
+  <div class="md-content">
+    {{ html | safe }}
+  </div>
+</section>
+
+{% endblock %}

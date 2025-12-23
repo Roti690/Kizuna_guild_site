@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="pill">Where Winds Meet • Guild</div>
+      <h1>{{ app_name }}</h1>
+      <p class="lead">
+        A „Kizuna” (絆) egy japán szó, amely baráti szálakat, emberi kötelékeket,
+        kapcsolatokat, közös elköteleződést és megosztott élményeket jelent —
+        mindezt a kölcsönös bizalomra, támogatásra és egységre építve.
+      </p>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-k">Stílus</div>
+          <div class="stat-v">Chill & fókuszált</div>
+        </div>
+        <div class="stat">
+          <div class="stat-k">Tartalom</div>
+          <div class="stat-v">PvPvE / Közösség</div>
+        </div>
+        <div class="stat">
+          <div class="stat-k">Időzóna</div>
+          <div class="stat-v">GMT+1</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="two-col">
+  <div class="card">
+    <h2>Rólunk – Kizuna</h2>
+
+<p>
+  A <strong>Kizuna</strong> egy magyar gamer közösség, ahol a csapatmunka,
+  a jó hangulat és az összetartás valóban számít.
+</p>
+
+<p>
+  Fő bázisunk a <strong>Where Winds Meet</strong>, ahol együtt kalandozunk,
+  fejlődünk, és közösen építjük fel a saját történetünket.
+  Ugyanakkor nem ragadunk le egyetlen játéknál:
+  több világban is jelen vagyunk, és mindig együtt mozdulunk,
+  akármerre fúj a szél.
+</p>
+
+<p>
+  Nálunk alap a baráti légkör, a lazaság és a kölcsönös támogatás.
+  Hiszünk abban, hogy a fejlődés és a szórakozás kéz a kézben jár —
+  legyen szó kihívásokról, közös tartalomról,
+  vagy egyszerűen csak egy jó hangulatú estéről.
+</p>
+
+<p>
+  Ha egy olyan közösséget keresel, ahol számítasz,
+  és ahol mindig akad kivel játszani,
+  akkor a <strong>Kizuna</strong> jó hely lehet számodra.
+</p>
+
+<p>
+  <strong>Csatlakozás meghívással.</strong>
+</p>
+  </div>
+
+  <div class="card">
+    <h2>Hírek</h2>
+
+    {% if posts and posts|length > 0 %}
+      <ul class="list">
+        {% for p in posts[:3] %}
+          <li class="post-item">
+            <div class="post-title">{{ p.title }}</div>
+            <div class="post-body muted">{{ p.body }}</div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <div class="divider"></div>
+
+    <h3 class="subhead">Hivatalos Where Winds Meet hírek</h3>
+
+    {% if official_news and official_news|length > 0 %}
+      <ul class="list">
+        {% for n in official_news[:3] %}
+          <li class="post-item">
+            <div class="post-title">{{ n.title }}</div>
+            <a class="muted" href="{{ n.url }}" target="_blank" rel="noopener noreferrer">
+              Megnyitás a hivatalos oldalon →
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">Jelenleg nem sikerült betölteni a hivatalos híreket.</p>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

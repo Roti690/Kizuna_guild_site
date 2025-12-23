@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="card" style="max-width:520px; margin: 0 auto;">
+  <h2>Tiszti bejelentkezés</h2>
+  <p class="muted">Add meg a közös tiszti jelszót.</p>
+
+  {% if error %}
+    <p style="margin-top:10px; font-weight:900;">{{ error }}</p>
+  {% endif %}
+
+  <form method="post" action="/officer/login" class="form" style="margin-top:12px;">
+    <label class="muted">Jelszó</label>
+    <input type="password" name="password" required />
+    <button class="btn primary" type="submit">Belépés</button>
+  </form>
+</section>
+
+{% endblock %}

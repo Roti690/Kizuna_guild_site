@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="card">
+  <div class="events-head">
+    <div>
+      <h2>Eventek</h2>
+      <p class="muted">
+        Heti menetrend (GMT+1). Változás esetén Discordon jelezzük.
+      </p>
+    </div>
+    <a class="btn" href="https://discord.gg/EXTwHXQF" target="_blank" rel="noopener noreferrer">
+      Discord
+    </a>
+  </div>
+</section>
+
+<section class="events-cards">
+  <!-- Breaking Army -->
+  <article class="event-hero-card">
+    <div class="event-media" style="background-image:url('/static/events/breaking_army.jpg')">
+      <div class="event-overlay">
+        <div class="event-chip">Breaking Army</div>
+        <div class="event-times">
+          <div class="time-pill"><span class="muted">Szombat</span> <strong>{{ cfg.breaking_sat }}</strong></div>
+          <div class="time-pill"><span class="muted">Vasárnap</span> <strong>{{ cfg.breaking_sun }}</strong></div>
+        </div>
+      </div>
+    </div>
+    <div class="event-body">
+      <div class="event-desc muted">
+        Hétvégi guild event – gyűljünk össze időben, hogy mindenki beférjen.
+      </div>
+    </div>
+  </article>
+
+  <!-- Test your Skill -->
+  <article class="event-hero-card">
+    <div class="event-media" style="background-image:url('/static/events/test_your_skill.png')">
+      <div class="event-overlay">
+        <div class="event-chip">Test your Skill</div>
+        <div class="event-times">
+          <div class="time-pill"><span class="muted">Szombat</span> <strong>{{ cfg.skill_sat }}</strong></div>
+          <div class="time-pill"><span class="muted">Vasárnap</span> <strong>{{ cfg.skill_sun }}</strong></div>
+        </div>
+      </div>
+    </div>
+    <div class="event-body">
+      <div class="event-desc muted">
+        Rövid, pörgős program – ideális bemelegítés a hétvégi raidek előtt.
+      </div>
+    </div>
+  </article>
+
+  <!-- Guild Party (Daily) -->
+  <article class="event-hero-card">
+    <div class="event-media" style="background-image:url('/static/events/guild_party.png')">
+      <div class="event-overlay">
+        <div class="event-chip">Guild Party</div>
+        <div class="event-times">
+          <div class="time-pill"><span class="muted">Mindennap</span> <strong>{{ cfg.party_daily }}</strong></div>
+        </div>
+      </div>
+    </div>
+    <div class="event-body">
+      <div class="event-desc muted">
+        Fix napi időpont – ha csak egy dologra ugrasz be, ez legyen az.
+      </div>
+    </div>
+  </article>
+
+  <!-- Guild Raids -->
+  <article class="event-hero-card">
+    <div class="event-media" style="background-image:url('/static/events/guild_raids.jpg')">
+      <div class="event-overlay">
+        <div class="event-chip">Guild Raidek</div>
+        <div class="event-times">
+          <div class="time-pill"><span class="muted">Szombat</span> <strong>{{ cfg.raids_sat }}</strong></div>
+          <div class="time-pill"><span class="muted">Vasárnap</span> <strong>{{ cfg.raids_sun }}</strong></div>
+        </div>
+      </div>
+    </div>
+    <div class="event-body">
+      <div class="event-desc muted">
+        Endgame fókusz – hozz potikat, buffokat, és kezdjünk pontosan.
+      </div>
+    </div>
+  </article>
+</section>
+
+{% endblock %}

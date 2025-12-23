@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="card">
+  <div class="members-header">
+    <div>
+      <h2>Tagok</h2>
+      <p class="muted">Az aktivitás az elmúlt két hetet mutatja.</p>
+    </div>
+  </div>
+</section>
+
+{% for group_name, group_members in groups %}
+  {% if group_members %}
+    <section class="member-group">
+      <h3 class="group-title">
+        {{ group_name }} <span class="muted">· {{ group_members|length }}</span>
+      </h3>
+
+      <section class="members-grid">
+        {% for m in group_members %}
+          <div class="member-card">
+            <div class="member-top">
+              <div class="member-name">{{ m.name }}</div>
+              <div class="member-role">{{ m.role }}</div>
+            </div>
+
+            <div class="member-weeks">
+              <div class="week">
+                <div class="week-label">{{ week1_label|default("Múlt hét") }}</div>
+                <div class="pill-status {{ m.week1_status|default('active') }}">
+                  {{ m.week1_status|default('active') }}
+                </div>
+              </div>
+
+              <div class="week">
+                <div class="week-label">{{ week2_label|default("2 héttel ezelőtt") }}</div>
+                <div class="pill-status {{ m.week2_status|default('active') }}">
+                  {{ m.week2_status|default('active') }}
+                </div>
+              </div>
+            </div>
+
+            {% if m.note %}
+              <div class="member-note muted">{{ m.note }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </section>
+    </section>
+  {% endif %}
+{% endfor %}
+
+{% endblock %}

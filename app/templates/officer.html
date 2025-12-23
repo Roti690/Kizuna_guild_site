@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="card">
+  <h3>Események menetrendje</h3>
+  <p class="muted">
+    Itt csak az időpontokat frissítsd.
+    Használj ilyen formátumokat: <code>16:30-17:30</code> vagy <code>20:00</code>.
+  </p>
+
+  <form method="post" action="/_officer/events/update" class="form">
+    <div class="row">
+      <div>
+        <label class="muted">Breaking Army (Szombat)</label>
+        <input name="breaking_sat" value="{{ cfg.breaking_sat }}" />
+      </div>
+      <div>
+        <label class="muted">Breaking Army (Vasárnap)</label>
+        <input name="breaking_sun" value="{{ cfg.breaking_sun }}" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label class="muted">Test your Skill (Szombat)</label>
+        <input name="skill_sat" value="{{ cfg.skill_sat }}" />
+      </div>
+      <div>
+        <label class="muted">Test your Skill (Vasárnap)</label>
+        <input name="skill_sun" value="{{ cfg.skill_sun }}" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label class="muted">Guild Party (Mindennap)</label>
+        <input name="party_daily" value="{{ cfg.party_daily }}" />
+      </div>
+      <div></div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label class="muted">Guild Raidek (Szombat)</label>
+        <input name="raids_sat" value="{{ cfg.raids_sat }}" />
+      </div>
+      <div>
+        <label class="muted">Guild Raidek (Vasárnap)</label>
+        <input name="raids_sun" value="{{ cfg.raids_sun }}" />
+      </div>
+    </div>
+
+    <button class="btn primary" type="submit">Menetrend mentése</button>
+  </form>
+</section>
+
+<section class="two-col">
+  <div class="card">
+    <h3>Hétváltás (vasárnap)</h3>
+    <form method="post" action="/_officer/roll-week" class="form">
+      <label class="muted">Új hét alapértelmezett státusz</label>
+      <select name="default_new_week1">
+        {% for s in allowed %}
+          <option value="{{ s }}">{{ s }}</option>
+        {% endfor %}
+      </select>
+      <button class="btn primary" type="submit">Hét váltása</button>
+    </form>
+    <p class="muted" style="margin-top:10px;">
+      Ez átteszi a <strong>múlt hetet → 2 héttel ezelőtt</strong>,
+      és az <strong>aktuális hetet</strong> visszaállítja az alapértelmezettre.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Tag hozzáadása</h3>
+    <form method="post" action="/_officer/add" class="form">
+      <label class="muted">Név</label>
+      <input name="name" placeholder="PlayerName" required />
+
+      <label class="muted">Rang</label>
+      <input name="role" placeholder="Member / Officer / Guild Master" value="Tag" />
+
+      <div class="row">
+        <div>
+          <label class="muted">Múlt hét</label>
+          <select name="week1_status">
+            {% for s in allowed %}
+              <option value="{{ s }}" {% if s == "active" %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label class="muted">2 héttel ezelőtt</label>
+          <select name="week2_status">
+            {% for s in allowed %}
+              <option value="{{ s }}" {% if s == "active" %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <label class="muted">Megjegyzés</label>
+      <input name="note" placeholder="Opcionális megjegyzés" />
+
+      <button class="btn primary" type="submit">Hozzáadás</button>
+    </form>
+  </div>
+</section>
+
+<section class="card">
+  <h3>Tagok szerkesztése</h3>
+
+  {% if members %}
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Név</th>
+            <th>Rang</th>
+            <th>Múlt hét</th>
+            <th>2 héttel ezelőtt</th>
+            <th>Megjegyzés</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in members %}
+          <tr>
+            <td><strong>{{ m.name }}</strong></td>
+
+            <td>
+              <form method="post" action="/_officer/update/{{ m.id }}" class="inline-form">
+                <input name="role" value="{{ m.role }}" />
+            </td>
+
+            <td>
+                <select name="week1_status">
+                  {% for s in allowed %}
+                    <option value="{{ s }}" {% if s == m.week1_status %}selected{% endif %}>{{ s }}</option>
+                  {% endfor %}
+                </select>
+            </td>
+
+            <td>
+                <select name="week2_status">
+                  {% for s in allowed %}
+                    <option value="{{ s }}" {% if s == m.week2_status %}selected{% endif %}>{{ s }}</option>
+                  {% endfor %}
+                </select>
+            </td>
+
+            <td>
+                <input name="note" value="{{ m.note or '' }}" placeholder="-" />
+            </td>
+
+            <td style="white-space:nowrap; display:flex; gap:8px; align-items:center;">
+                <button class="btn" type="submit">Mentés</button>
+              </form>
+
+              <form method="post" action="/_officer/delete/{{ m.id }}" onsubmit="return confirm('Biztosan törlöd {{ m.name }} tagot?');">
+                <button class="btn ghost" type="submit">Törlés</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="muted">Még nincs egyetlen tag sem.</p>
+  {% endif %}
+</section>
+
+{% endblock %}

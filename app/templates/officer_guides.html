@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="card">
+  <a class="muted" href="/_officer">← Vissza a tiszti felületre</a>
+  <h2 style="margin-top:10px;">Útmutató szerkesztő</h2>
+  <p class="muted">
+    Tölts fel egy képet, majd illeszd be a Markdown kódot oda,
+    ahol az útmutatóban meg szeretnéd jeleníteni.
+  </p>
+</section>
+
+<section class="card">
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+    <h3 style="margin:0;">Útmutatók</h3>
+    <a class="btn primary" href="/_officer/guides/new">+ Új útmutató</a>
+  </div>
+
+  {% if guides %}
+    <div class="guide-list">
+      {% for g in guides %}
+        <div class="guide-row">
+          <div>
+            <div class="guide-row-title">{{ g.title }}</div>
+            <div class="muted" style="font-size:.9rem;">
+              {{ g.category }} • /builds/{{ g.slug }}
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <a class="btn" href="/builds/{{ g.slug }}" target="_blank" rel="noopener noreferrer">Megtekintés</a>
+            <a class="btn primary" href="/_officer/guides/edit/{{ g.id }}">Szerkesztés</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="muted">Még nincs egyetlen útmutató sem.</p>
+  {% endif %}
+</section>
+
+{% endblock %}
