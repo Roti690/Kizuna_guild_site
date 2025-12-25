@@ -39,3 +39,8 @@ Thumbs.db
 .pytest_cache/
 .coverage
 htmlcov/
+
+Dockerfile
+fly.toml
+.github/
+.dockerignore
