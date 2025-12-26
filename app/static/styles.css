@@ -332,6 +332,59 @@ code{
 .bullets{ margin: 10px 0 0; padding-left: 18px; color: var(--muted); }
 .bullets li{ margin: 6px 0; }
 
+/* ---------- Rules page ---------- */
+.page-hero{
+  margin-top:18px;
+  padding:18px;
+  background: linear-gradient(145deg, rgba(28,24,26,.92), rgba(21,18,20,.70));
+  box-shadow: var(--shadow);
+}
+.page-hero h1{
+  margin: 10px 0 6px;
+  font-size: 2.2rem;
+  color:#f1e9e4;
+}
+
+.rules-grid{
+  margin-top:16px;
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap:12px;
+}
+@media (max-width: 920px){
+  .rules-grid{ grid-template-columns: 1fr; }
+}
+
+.rule-card{
+  background: rgba(28,24,26,.88);
+  border:1px solid var(--line);
+  border-radius: var(--radius);
+  padding:14px 16px;
+  box-shadow: var(--shadow-soft);
+}
+.rule-title{
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  font-weight: 950;
+  letter-spacing: .3px;
+  color:#f1e9e4;
+}
+.rule-body{
+  margin: 0 0 8px;
+  line-height: 1.5;
+  color: rgba(233,225,220,.90);
+}
+.rule-body:last-child{ margin-bottom: 0; }
+.rule-wide{ grid-column: 1 / -1; }
+
+.rule-footer{
+  margin-top:16px;
+  padding:14px 16px;
+  text-align:center;
+  font-weight: 900;
+  letter-spacing: .3px;
+}
+
 /* ---------- Forms ---------- */
 .form{ display:grid; gap:10px; }
 
@@ -357,7 +410,56 @@ code{
 @media (max-width: 980px){ .row{ grid-template-columns: 1fr; } }
 
 .table-wrap{ overflow:auto; }
+.table{
+  width:100%;
+  border-collapse: collapse;
+}
+.table th,
+.table td{
+  padding:10px 8px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.table tbody tr:last-child td{
+  border-bottom: none;
+}
 .inline-form{ display:contents; }
+
+/* ---------- Officer activity chart ---------- */
+.activity-chart{
+  display:grid;
+  grid-auto-flow:column;
+  gap:4px;
+  align-items:center;
+  min-width: 120px;
+}
+.activity-dot{
+  width:12px;
+  height:12px;
+  border-radius:4px;
+  border:1px solid var(--line);
+  background: rgba(28,24,26,.75);
+}
+.activity-dot.active{
+  background: rgba(46,125,50,.55);
+  border-color: rgba(46,125,50,.7);
+}
+.activity-dot.low{
+  background: rgba(245,176,65,.5);
+  border-color: rgba(245,176,65,.7);
+}
+.activity-dot.holiday{
+  background: rgba(30,136,229,.5);
+  border-color: rgba(30,136,229,.7);
+}
+.activity-dot.inactive{
+  background: rgba(229,57,53,.5);
+  border-color: rgba(229,57,53,.7);
+}
+.activity-dot.unknown{
+  background: rgba(255,255,255,.06);
+  border-style: dashed;
+  opacity:.7;
+}
 
 /* ---------- Footer ---------- */
 .footer{

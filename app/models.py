@@ -13,6 +13,9 @@ class Member(Base):
     week1_status: Mapped[str] = mapped_column(String(20), default="active")
     week2_status: Mapped[str] = mapped_column(String(20), default="active")
 
+    # JSON list of older weekly statuses (oldest -> newest)
+    activity_history: Mapped[str | None] = mapped_column(Text, default="", nullable=True)
+
     note: Mapped[str | None] = mapped_column(String(140), nullable=True)
 
 class Post(Base):

@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 
-from .db import Base, engine
+from .db import Base, engine, ensure_member_activity_history
 from .routes.pages import router as pages_router
 from .routes.api import router as api_router
 from .config import settings
@@ -14,6 +14,7 @@ def create_app() -> FastAPI:
 
     # Create tables
     Base.metadata.create_all(bind=engine)
+    ensure_member_activity_history()
 
     app.mount("/static", StaticFiles(directory="app/static"), name="static")
 

@@ -111,7 +111,13 @@
 <section class="card">
   <h3>Tagok szerkesztése</h3>
 
+  <form id="bulk-update" method="post" action="/_officer/update-all"></form>
+
   {% if members %}
+    <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
+      <button class="btn primary" type="submit" form="bulk-update">Mentés mindenkinél</button>
+    </div>
+
     <div class="table-wrap">
       <table class="table">
         <thead>
@@ -120,6 +126,7 @@
             <th>Rang</th>
             <th>Múlt hét</th>
             <th>2 héttel ezelőtt</th>
+            <th>Aktivitás ({{ activity_weeks }} hét)</th>
             <th>Megjegyzés</th>
             <th></th>
           </tr>
@@ -127,15 +134,17 @@
         <tbody>
           {% for m in members %}
           <tr>
-            <td><strong>{{ m.name }}</strong></td>
-
             <td>
-              <form method="post" action="/_officer/update/{{ m.id }}" class="inline-form">
-                <input name="role" value="{{ m.role }}" />
+              <strong>{{ m.name }}</strong>
+              <input type="hidden" name="member_id" value="{{ m.id }}" form="bulk-update" />
             </td>
 
             <td>
-                <select name="week1_status">
+                <input name="role" value="{{ m.role }}" form="bulk-update" />
+            </td>
+
+            <td>
+                <select name="week1_status" form="bulk-update">
                   {% for s in allowed %}
                     <option value="{{ s }}" {% if s == m.week1_status %}selected{% endif %}>{{ s }}</option>
                   {% endfor %}
@@ -143,7 +152,7 @@
             </td>
 
             <td>
-                <select name="week2_status">
+                <select name="week2_status" form="bulk-update">
                   {% for s in allowed %}
                     <option value="{{ s }}" {% if s == m.week2_status %}selected{% endif %}>{{ s }}</option>
                   {% endfor %}
@@ -151,13 +160,22 @@
             </td>
 
             <td>
-                <input name="note" value="{{ m.note or '' }}" placeholder="-" />
+              <div class="activity-chart" aria-label="Aktivitás">
+                {% for status in m.activity_trend %}
+                  {% set weeks_ago = activity_weeks - loop.index %}
+                  <span
+                    class="activity-dot {{ status }}"
+                    title="{{ status }} · {% if weeks_ago == 0 %}múlt hét{% else %}{{ weeks_ago }} hete{% endif %}"
+                  ></span>
+                {% endfor %}
+              </div>
+            </td>
+
+            <td>
+                <input name="note" value="{{ m.note or '' }}" placeholder="-" form="bulk-update" />
             </td>
 
             <td style="white-space:nowrap; display:flex; gap:8px; align-items:center;">
-                <button class="btn" type="submit">Mentés</button>
-              </form>
-
               <form method="post" action="/_officer/delete/{{ m.id }}" onsubmit="return confirm('Biztosan törlöd {{ m.name }} tagot?');">
                 <button class="btn ghost" type="submit">Törlés</button>
               </form>

@@ -127,3 +127,13 @@ def guide_detail(slug: str, request: Request, db: Session = Depends(get_db)):
             "html": html,
         },
     )
+
+@router.get("/szabalyzat", response_class=HTMLResponse)
+def szabalyzat(request: Request):
+    return templates.TemplateResponse(
+        "szabalyzat.html",
+        {
+            "request": request,
+            "app_name": settings.app_name,
+        },
+    )

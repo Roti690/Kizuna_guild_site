@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
 from .config import settings
@@ -17,3 +17,13 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def ensure_member_activity_history():
+    inspector = inspect(engine)
+    if "members" not in inspector.get_table_names():
+        return
+    columns = {col["name"] for col in inspector.get_columns("members")}
+    if "activity_history" in columns:
+        return
+    with engine.begin() as conn:
+        conn.execute(text("ALTER TABLE members ADD COLUMN activity_history TEXT"))

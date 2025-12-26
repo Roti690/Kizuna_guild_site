@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from urllib.parse import quote
+import json
 
 from ..db import get_db
 from ..models import Member, EventConfig, Guide, GuideImage
@@ -18,6 +19,7 @@ router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
 ALLOWED = {"holiday", "inactive", "low", "active"}
+ACTIVITY_WEEKS = 8
 UPLOAD_DIR = "app/static/uploads"
 ALLOWED_EXT = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
 
@@ -32,6 +34,26 @@ def require_officer(request: Request):
         return RedirectResponse(url="/officer/login", status_code=303)
     return None
 
+def parse_activity_history(raw: str | None) -> list[str]:
+    if not raw:
+        return []
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError:
+        return []
+    if not isinstance(data, list):
+        return []
+    return [s for s in data if isinstance(s, str) and s in ALLOWED]
+
+def build_activity_trend(member: Member) -> list[str]:
+    max_history = max(ACTIVITY_WEEKS - 2, 0)
+    history = parse_activity_history(member.activity_history)
+    history = history[-max_history:]
+    statuses = history + [member.week2_status, member.week1_status]
+    if len(statuses) < ACTIVITY_WEEKS:
+        statuses = ["unknown"] * (ACTIVITY_WEEKS - len(statuses)) + statuses
+    return statuses
+
 
 
 @router.get("/_officer", response_class=HTMLResponse)
@@ -41,6 +63,8 @@ def officer_panel(request: Request, db: Session = Depends(get_db)):
         return gate
 
     members = db.scalars(select(Member).order_by(Member.role.desc(), Member.name.asc())).all()
+    for m in members:
+        m.activity_trend = build_activity_trend(m)
 
     cfg = db.get(EventConfig, 1)
     if not cfg:
@@ -61,6 +85,7 @@ def officer_panel(request: Request, db: Session = Depends(get_db)):
             "guides": guides,
             "allowed": sorted(ALLOWED),
             "cfg": cfg,
+            "activity_weeks": ACTIVITY_WEEKS,
         },
     )
 
@@ -77,6 +102,11 @@ def roll_week(
 
     members = db.scalars(select(Member)).all()
     for m in members:
+        history = parse_activity_history(m.activity_history)
+        history.append(m.week2_status if m.week2_status in ALLOWED else "unknown")
+        max_history = max(ACTIVITY_WEEKS - 2, 0)
+        history = history[-max_history:]
+        m.activity_history = json.dumps(history)
         m.week2_status = m.week1_status
         m.week1_status = default_new_week1
     db.commit()
@@ -144,6 +174,38 @@ def update_member(
     m.note = note.strip() or None
     db.commit()
 
+    return RedirectResponse(url=f"/_officer", status_code=303)
+
+@router.post("/_officer/update-all")
+def update_all_members(
+    member_id: list[int] = Form(...),
+    role: list[str] = Form(...),
+    week1_status: list[str] = Form(...),
+    week2_status: list[str] = Form(...),
+    note: list[str] = Form(...),
+    db: Session = Depends(get_db),
+):
+
+    if not (len(member_id) == len(role) == len(week1_status) == len(week2_status) == len(note)):
+        raise HTTPException(status_code=400, detail="Invalid payload")
+
+    for idx, mid in enumerate(member_id):
+        m = db.get(Member, mid)
+        if not m:
+            continue
+
+        w1 = week1_status[idx].strip().lower()
+        w2 = week2_status[idx].strip().lower()
+        if w1 not in ALLOWED or w2 not in ALLOWED:
+            raise HTTPException(status_code=400, detail="Invalid status")
+
+        m.role = role[idx].strip() or "Member"
+        m.week1_status = w1
+        m.week2_status = w2
+        note_val = note[idx].strip()
+        m.note = note_val or None
+
+    db.commit()
     return RedirectResponse(url=f"/_officer", status_code=303)
 
 @router.post("/_officer/delete/{member_id}")
